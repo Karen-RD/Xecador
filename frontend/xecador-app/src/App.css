@@ -1,0 +1,86 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:Segoe UI, sans-serif;
+}
+
+.login-container{
+  width:100vw;
+  height:100vh;
+
+  background-image:url('./assets/login-bg.jpg');
+  background-size:cover;
+  background-position:center;
+}
+
+.overlay{
+  width:100%;
+  height:100%;
+
+  background:rgba(9, 38, 1, 0.55);
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  padding:80px;
+}
+
+.left-panel{
+  color:white;
+  max-width:500px;
+}
+
+.left-panel h1{
+  font-size:4rem;
+}
+
+.left-panel h2{
+  margin-top:20px;
+  font-size:2rem;
+}
+
+.left-panel p{
+  margin-top:15px;
+  font-size:1.1rem;
+}
+
+.login-card{
+  width:400px;
+
+  background:white;
+
+  padding:40px;
+
+  border-radius:20px;
+
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+}
+
+.login-card h2{
+  text-align:center;
+}
+
+.login-card input{
+  padding:12px;
+}
+
+.login-card button{
+  padding:12px;
+
+  background:#006b3f;
+
+  color:white;
+
+  border:none;
+
+  border-radius:10px;
+
+  cursor:pointer;
+}
