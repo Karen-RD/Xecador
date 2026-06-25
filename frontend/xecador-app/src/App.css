@@ -12,27 +12,26 @@ body{
   width:100vw;
   height:100vh;
 
-  background-image:url('./assets/login-bg.jpg');
+  background-image:url('./assets/portada.jpg');
   background-size:cover;
   background-position:center;
+  background-repeat:no-repeat;
 }
 
 .overlay{
   width:100%;
   height:100%;
 
-  background:rgba(9, 38, 1, 0.55);
-
   display:flex;
-  justify-content:space-between;
+  justify-content:center;
   align-items:center;
+  gap:120px;
 
   padding:80px;
 }
-
 .left-panel{
   color:white;
-  max-width:500px;
+  max-width:400px;
 }
 
 .left-panel h1{
@@ -50,7 +49,7 @@ body{
 }
 
 .login-card{
-  width:400px;
+  width:500px;
 
   background:white;
 
@@ -61,6 +60,8 @@ body{
   display:flex;
   flex-direction:column;
   gap:15px;
+
+  box-shadow:0 10px 30px rgba(0,0,0,0.25);
 }
 
 .login-card h2{
@@ -69,7 +70,10 @@ body{
 
 .login-card input{
   padding:12px;
+  border:1px solid #ccc;
+  border-radius:8px;
 }
+
 
 .login-card button{
   padding:12px;

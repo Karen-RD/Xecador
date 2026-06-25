@@ -1,37 +1,24 @@
-import logoXecador from "./assets/LogoX.png";
-import "./App.css";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import Empleados from './pages/Empleados';
+import Incidencias from './pages/Incidencias';
+import Asistencia from './pages/Asistencia';
 
 function App() {
+  const token = localStorage.getItem('token');
+
   return (
-    <div className="login-container">
-      <div className="overlay">
-        
-        <div className="left-panel">
-          <h1>XECADOR</h1>
-          <h2>By Xcaret</h2>
-        </div>
-
-        <div className="login-card">
-          <h2>Iniciar Sesión</h2>
-
-          <input
-            type="text"
-            placeholder="Correo o usuario"
-          />
-
-          <input
-            type="password"
-            placeholder="Contraseña"
-          />
-
-          <button>
-            Ingresar
-          </button>
-
-        </div>
-
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={token ? <Dashboard /> : <Navigate to="/login" />} />
+        <Route path="/empleados" element={token ? <Empleados /> : <Navigate to="/login" />} />
+        <Route path="/incidencias" element={token ? <Incidencias /> : <Navigate to="/login" />} />
+        <Route path="/asistencia" element={token ? <Asistencia /> : <Navigate to="/login" />} />
+        <Route path="/" element={<Navigate to={token ? "/dashboard" : "/login"} />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
