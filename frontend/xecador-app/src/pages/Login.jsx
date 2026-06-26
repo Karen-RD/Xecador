@@ -13,6 +13,18 @@ function Login() {
     e.preventDefault();
     setError('');
     setLoading(true);
+     setTimeout(() => {
+    if (email && password) {
+      localStorage.setItem('token', 'token-prueba-xecador');
+      localStorage.setItem('rol', 'SuperAdmin');
+      localStorage.setItem('nombre', 'Karen Rojas');
+      navigate('/dashboard');
+    } else {
+      setError('Ingresa correo y contraseña');
+    }
+    setLoading(false);
+  }, 800);
+
 
     try {
       const data = await login(email, password);
