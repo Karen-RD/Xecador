@@ -5,6 +5,7 @@ import Empleados from './pages/Empleados';
 import Incidencias from './pages/Incidencias';
 import Asistencia from './pages/Asistencia';
 import Horarios from './pages/Horarios';
+import RutaProtegida from './components/RutaProtegida';
 
 function App() {
   const token = localStorage.getItem('token');
@@ -13,11 +14,37 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={token ? <Dashboard /> : <Navigate to="/login" />} />
-        <Route path="/empleados" element={token ? <Empleados /> : <Navigate to="/login" />} />
-        <Route path="/incidencias" element={token ? <Incidencias /> : <Navigate to="/login" />} />
-        <Route path="/asistencia" element={token ? <Asistencia /> : <Navigate to="/login" />} />
-        <Route path="/horarios" element={token ? <Horarios /> : <Navigate to="/login" />} />
+
+        <Route path="/dashboard" element={
+          <RutaProtegida rolesPermitidos={['SuperAdmin','TalentoHumano','Supervisor']}>
+            <Dashboard />
+          </RutaProtegida>
+        } />
+
+        <Route path="/empleados" element={
+          <RutaProtegida rolesPermitidos={['SuperAdmin','TalentoHumano']}>
+            <Empleados />
+          </RutaProtegida>
+        } />
+
+        <Route path="/incidencias" element={
+          <RutaProtegida rolesPermitidos={['SuperAdmin','TalentoHumano','Supervisor']}>
+            <Incidencias />
+          </RutaProtegida>
+        } />
+
+        <Route path="/asistencia" element={
+          <RutaProtegida rolesPermitidos={['SuperAdmin','TalentoHumano','Supervisor']}>
+            <Asistencia />
+          </RutaProtegida>
+        } />
+
+        <Route path="/horarios" element={
+          <RutaProtegida rolesPermitidos={['SuperAdmin','TalentoHumano','Supervisor']}>
+            <Horarios />
+          </RutaProtegida>
+        } />
+
         <Route path="/" element={<Navigate to={token ? "/dashboard" : "/login"} />} />
       </Routes>
     </BrowserRouter>

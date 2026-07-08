@@ -10,5 +10,7 @@ namespace XecadorAPI.Data
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Empleado> Empleados { get; set; }
         public DbSet<Incidencia> Incidencias { get; set; }
+        public DbSet<Horario> Horarios { get; set; }
+        public DbSet<Asistencia> Asistencias { get; set; }
     }
 }
