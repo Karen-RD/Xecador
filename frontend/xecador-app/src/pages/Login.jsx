@@ -13,19 +13,28 @@ function Login() {
     e.preventDefault();
     setError('');
     setLoading(true);
+
      setTimeout(() => {
-    if (email && password) {
-      localStorage.setItem('token', 'token-prueba-xecador');
-      localStorage.setItem('rol', 'SuperAdmin');
-      localStorage.setItem('nombre', 'Karen Rojas');
+    // Simulación de 3 roles diferentes
+    const usuarios = {
+      'admin@xcaret.com':      { token: 'token-sa',  rol: 'SuperAdmin',      nombre: 'Karen Rojas' },
+      'rh@xcaret.com':         { token: 'token-th',  rol: 'TalentoHumano',   nombre: 'Admin RH' },
+      'supervisor@xcaret.com': { token: 'token-sup', rol: 'Supervisor',       nombre: 'Victor Ku Poot' },
+    };
+
+    const usuario = usuarios[email];
+
+    if (usuario && password === '123456') {
+      localStorage.setItem('token', usuario.token);
+      localStorage.setItem('rol', usuario.rol);
+      localStorage.setItem('nombre', usuario.nombre);
       navigate('/dashboard');
     } else {
-      setError('Ingresa correo y contraseña');
+      setError('Correo o contraseña incorrectos');
     }
     setLoading(false);
   }, 800);
-
-
+  
     try {
       const data = await login(email, password);
       localStorage.setItem('token', data.token);
