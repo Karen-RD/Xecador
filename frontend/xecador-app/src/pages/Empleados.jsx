@@ -5,7 +5,6 @@ import {
   unidadesDeNegocio,
   departamentos,
   puestos,
-  tiposUnidad
 } from '../services/datosDemo';
 
 const TABS = ['Colaboradores', 'Unidades de Negocio', 'Áreas'];
@@ -17,26 +16,25 @@ function Empleados() {
   const [mostrarForm, setMostrarForm] = useState(false);
   const rol = localStorage.getItem('rol');
 
-  // Form nuevo colaborador
   const [nuevoColab, setNuevoColab] = useState({
-    codigo: '', nombre: '', unidadNegocio: '', area: '', puesto: '',
-    horario: '', guardia: 'Ninguna'
+    codigo: '', nombre: '', unidadNegocio: '', area: '', puesto: '', horario: ''
   });
 
-  // Unidades de negocio dadas de alta
-  const [unidades, setUnidades] = useState(
-    tiposUnidad.map((t, i) => ({ id: i+1, tipo: t, nombre: t === 'Parque' ? 'Xcaret' : 'Hotel Xcaret México' }))
-  );
-  const [nuevaUnidad, setNuevaUnidad] = useState({ tipo: 'Parque', nombre: '' });
-  const [mostrarFormUnidad, setMostrarFormUnidad] = useState(false);
-
-  // Áreas dadas de alta
-  const [areas, setAreas] = useState([
-    { id: 1, nombre: 'Mesa de Ayuda y Soporte Técnico' },
-    { id: 2, nombre: 'Dirección de Sistemas' },
+  // Unidades de negocio
+  const [unidades, setUnidades] = useState([
+    { id: 1, tipo: 'Parque', nombre: 'Xcaret', descripcion: 'Parque ecoturístico principal' },
+    { id: 2, tipo: 'Hotel', nombre: 'Hotel Xcaret México', descripcion: 'Hotel All-Fun Inclusive' },
   ]);
-  const [nuevaArea, setNuevaArea] = useState({ nombre: '' });
+  const [mostrarFormUnidad, setMostrarFormUnidad] = useState(false);
+  const [nuevaUnidad, setNuevaUnidad] = useState({ tipo: 'Parque', nombre: '', descripcion: '' });
+
+  // Áreas
+  const [areas, setAreas] = useState([
+    { id: 1, nombre: 'Mesa de Ayuda y Soporte Técnico', descripcion: 'Soporte a usuarios internos' },
+    { id: 2, nombre: 'Dirección de Sistemas', descripcion: 'Gestión de sistemas corporativos' },
+  ]);
   const [mostrarFormArea, setMostrarFormArea] = useState(false);
+  const [nuevaArea, setNuevaArea] = useState({ nombre: '', descripcion: '' });
 
   const colaboradoresFiltrados = colaboradores.filter(c =>
     c.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
@@ -48,10 +46,11 @@ function Empleados() {
     setColaboradores([...colaboradores, {
       id: colaboradores.length + 1,
       ...nuevoColab,
+      guardia: 'Ninguna',
       activo: true
     }]);
     setMostrarForm(false);
-    setNuevoColab({ codigo: '', nombre: '', unidadNegocio: '', area: '', puesto: '', horario: '', guardia: 'Ninguna' });
+    setNuevoColab({ codigo: '', nombre: '', unidadNegocio: '', area: '', puesto: '', horario: '' });
   };
 
   const handleBaja = (id) => {
@@ -63,14 +62,14 @@ function Empleados() {
   const handleAgregarUnidad = () => {
     if (!nuevaUnidad.nombre) return;
     setUnidades([...unidades, { id: unidades.length + 1, ...nuevaUnidad }]);
-    setNuevaUnidad({ tipo: 'Parque', nombre: '' });
+    setNuevaUnidad({ tipo: 'Parque', nombre: '', descripcion: '' });
     setMostrarFormUnidad(false);
   };
 
   const handleAgregarArea = () => {
     if (!nuevaArea.nombre) return;
     setAreas([...areas, { id: areas.length + 1, ...nuevaArea }]);
-    setNuevaArea({ nombre: '' });
+    setNuevaArea({ nombre: '', descripcion: '' });
     setMostrarFormArea(false);
   };
 
@@ -82,7 +81,6 @@ function Empleados() {
       <Sidebar />
       <div className="flex-1 p-6">
 
-        {/* Header */}
         <div className="mb-5">
           <h1 className="text-xl font-bold text-gray-800">Gestión de Personal</h1>
           <p className="text-sm text-gray-500">Administra colaboradores, unidades de negocio y áreas</p>
@@ -113,10 +111,10 @@ function Empleados() {
               )}
             </div>
 
-            {/* Formulario nuevo colaborador */}
             {mostrarForm && (
               <div className="bg-white border border-gray-200 rounded-xl p-5 mb-4">
-                <h2 className="text-sm font-bold text-gray-700 mb-4">Alta de colaborador</h2>
+                <h2 className="text-sm font-bold text-gray-700 mb-1">Alta de colaborador</h2>
+                <p className="text-xs text-gray-400 mb-4">La asignación de guardia la realiza el supervisor del área.</p>
                 <div className="grid grid-cols-2 gap-3">
 
                   <div>
@@ -128,7 +126,7 @@ function Empleados() {
 
                   <div>
                     <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Nombre completo</label>
-                    <input placeholder="Nombre completo del colaborador" value={nuevoColab.nombre}
+                    <input placeholder="Nombre completo" value={nuevoColab.nombre}
                       onChange={e => setNuevoColab({...nuevoColab, nombre: e.target.value})}
                       className={inputCls} />
                   </div>
@@ -170,18 +168,6 @@ function Empleados() {
                       className={inputCls} />
                   </div>
 
-                  <div>
-                    <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Guardia fin de semana</label>
-                    <select value={nuevoColab.guardia}
-                      onChange={e => setNuevoColab({...nuevoColab, guardia: e.target.value})}
-                      className={selectCls}>
-                      <option>Ninguna</option>
-                      <option>Sábados</option>
-                      <option>Domingos</option>
-                      <option>Sábados y Domingos</option>
-                    </select>
-                  </div>
-
                 </div>
                 <div className="flex gap-2 mt-4">
                   <button onClick={handleAgregarColab}
@@ -189,14 +175,13 @@ function Empleados() {
                     Guardar colaborador
                   </button>
                   <button onClick={() => setMostrarForm(false)}
-                    className="border border-gray-300 text-gray-600 px-5 py-2 rounded-lg text-sm hover:bg-gray-50">
+                    className="border border-gray-300 text-gray-600 px-5 py-2 rounded-lg text-sm">
                     Cancelar
                   </button>
                 </div>
               </div>
             )}
 
-            {/* Tabla colaboradores */}
             <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
               <table className="w-full text-sm">
                 <thead className="bg-gray-50 border-b border-gray-200">
@@ -248,38 +233,41 @@ function Empleados() {
               {rol === 'SuperAdmin' && (
                 <button onClick={() => setMostrarFormUnidad(!mostrarFormUnidad)}
                   className="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg text-sm font-semibold">
-                  + Nueva unidad de negocio
+                  + Registrar nueva unidad
                 </button>
               )}
             </div>
 
             {mostrarFormUnidad && (
               <div className="bg-white border border-gray-200 rounded-xl p-5 mb-4">
-                <h2 className="text-sm font-bold text-gray-700 mb-4">Nueva unidad de negocio</h2>
+                <h2 className="text-sm font-bold text-gray-700 mb-4">Registrar nueva unidad de negocio</h2>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Tipo</label>
+                    <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Tipo de unidad</label>
                     <select value={nuevaUnidad.tipo}
                       onChange={e => setNuevaUnidad({...nuevaUnidad, tipo: e.target.value})}
                       className={selectCls}>
-                      <option>Parque</option>
-                      <option>Hotel</option>
+                      <option value="Parque">Parque</option>
+                      <option value="Hotel">Hotel</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Nombre</label>
-                    <select value={nuevaUnidad.nombre}
+                    <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Nombre de la unidad</label>
+                    <input placeholder="Ej. Xel-Há, Hotel Xcaret Arte..." value={nuevaUnidad.nombre}
                       onChange={e => setNuevaUnidad({...nuevaUnidad, nombre: e.target.value})}
-                      className={selectCls}>
-                      <option value="">Selecciona unidad</option>
-                      {unidadesDeNegocio.map(u => <option key={u} value={u}>{u}</option>)}
-                    </select>
+                      className={inputCls} />
+                  </div>
+                  <div className="col-span-2">
+                    <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Descripción (opcional)</label>
+                    <input placeholder="Breve descripción de la unidad" value={nuevaUnidad.descripcion}
+                      onChange={e => setNuevaUnidad({...nuevaUnidad, descripcion: e.target.value})}
+                      className={inputCls} />
                   </div>
                 </div>
                 <div className="flex gap-2 mt-4">
                   <button onClick={handleAgregarUnidad}
                     className="bg-green-700 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-green-800">
-                    Guardar
+                    Registrar unidad
                   </button>
                   <button onClick={() => setMostrarFormUnidad(false)}
                     className="border border-gray-300 text-gray-600 px-5 py-2 rounded-lg text-sm">
@@ -291,13 +279,14 @@ function Empleados() {
 
             <div className="grid grid-cols-3 gap-3">
               {unidades.map(u => (
-                <div key={u.id} className="bg-white border border-gray-200 rounded-xl p-4 flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0 ${u.tipo === 'Parque' ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
+                <div key={u.id} className="bg-white border border-gray-200 rounded-xl p-4 flex items-start gap-3">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-lg flex-shrink-0 ${u.tipo === 'Parque' ? 'bg-green-50' : 'bg-blue-50'}`}>
                     {u.tipo === 'Parque' ? '🌿' : '🏨'}
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-gray-800">{u.nombre}</p>
-                    <p className="text-xs text-gray-400">{u.tipo}</p>
+                    <p className="text-xs text-gray-400 mb-1">{u.tipo}</p>
+                    {u.descripcion && <p className="text-xs text-gray-400">{u.descripcion}</p>}
                   </div>
                 </div>
               ))}
@@ -313,27 +302,32 @@ function Empleados() {
               {rol === 'SuperAdmin' && (
                 <button onClick={() => setMostrarFormArea(!mostrarFormArea)}
                   className="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg text-sm font-semibold">
-                  + Nueva área
+                  + Registrar nueva área
                 </button>
               )}
             </div>
 
             {mostrarFormArea && (
               <div className="bg-white border border-gray-200 rounded-xl p-5 mb-4">
-                <h2 className="text-sm font-bold text-gray-700 mb-4">Nueva área / departamento</h2>
-                <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Selecciona el área</label>
-                  <select value={nuevaArea.nombre}
-                    onChange={e => setNuevaArea({ nombre: e.target.value })}
-                    className={selectCls}>
-                    <option value="">Selecciona departamento</option>
-                    {departamentos.map(d => <option key={d} value={d}>{d}</option>)}
-                  </select>
+                <h2 className="text-sm font-bold text-gray-700 mb-4">Registrar nueva área / departamento</h2>
+                <div className="grid grid-cols-1 gap-3">
+                  <div>
+                    <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Nombre del área</label>
+                    <input placeholder="Ej. Sistemas, Soporte Técnico, Redes..." value={nuevaArea.nombre}
+                      onChange={e => setNuevaArea({...nuevaArea, nombre: e.target.value})}
+                      className={inputCls} />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Descripción (opcional)</label>
+                    <input placeholder="Breve descripción del área" value={nuevaArea.descripcion}
+                      onChange={e => setNuevaArea({...nuevaArea, descripcion: e.target.value})}
+                      className={inputCls} />
+                  </div>
                 </div>
                 <div className="flex gap-2 mt-4">
                   <button onClick={handleAgregarArea}
                     className="bg-green-700 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-green-800">
-                    Guardar
+                    Registrar área
                   </button>
                   <button onClick={() => setMostrarFormArea(false)}
                     className="border border-gray-300 text-gray-600 px-5 py-2 rounded-lg text-sm">
@@ -345,11 +339,14 @@ function Empleados() {
 
             <div className="grid grid-cols-3 gap-3">
               {areas.map(a => (
-                <div key={a.id} className="bg-white border border-gray-200 rounded-xl p-4 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center text-purple-700 font-bold text-sm flex-shrink-0">
+                <div key={a.id} className="bg-white border border-gray-200 rounded-xl p-4 flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center text-lg flex-shrink-0">
                     🏢
                   </div>
-                  <p className="text-sm font-semibold text-gray-800">{a.nombre}</p>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">{a.nombre}</p>
+                    {a.descripcion && <p className="text-xs text-gray-400 mt-1">{a.descripcion}</p>}
+                  </div>
                 </div>
               ))}
             </div>
