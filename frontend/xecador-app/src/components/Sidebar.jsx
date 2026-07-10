@@ -18,7 +18,7 @@ function Sidebar() {
     { path: '/asistencia', icon: '📅', label: 'Asistencia' },
     { path: '/incidencias', icon: '🔔', label: 'Incidencias' },
     { path: '/empleados', icon: '👥', label: 'Empleados' },
-    { path: '/horarios', icon: '⏰', label: 'Horarios' },
+    { path: '/horarios', icon: '⏰', label: 'Horarios', roles: ['SuperAdmin','TalentoHumano','Supervisor'] },
   ];
 
   return (

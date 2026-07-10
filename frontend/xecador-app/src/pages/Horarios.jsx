@@ -220,35 +220,65 @@ function Horarios() {
               </div>
             </div>
 
-            {/* Lista de colaboradores con sus horarios */}
-            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-              <div className="p-4 border-b border-gray-100">
-                <h2 className="text-xs font-bold text-gray-400 uppercase">Horarios asignados</h2>
-              </div>
-              {colaboradores.map(c => (
-                <div key={c.id} className="flex items-center gap-3 p-4 border-b border-gray-100 last:border-0 hover:bg-gray-50">
-                  <div className="w-9 h-9 rounded-lg bg-green-50 flex items-center justify-center text-xs font-bold text-green-700 flex-shrink-0">
-                    {c.nombre.split(' ').map(n => n[0]).slice(0,2).join('')}
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-gray-800">{c.nombre}</p>
-                    <p className="text-xs text-gray-400">{c.codigo}</p>
-                  </div>
-                  {c.horarioNombre ? (
-                    <div className="text-right">
-                      <span className="text-xs font-semibold bg-green-50 text-green-700 px-2 py-1 rounded-md">
-                        {c.horarioNombre}
-                      </span>
-                      <p className="text-xs text-gray-400 mt-0.5">{c.horarioAsignado}</p>
-                    </div>
-                  ) : (
-                    <span className="text-xs text-gray-300">Sin asignar</span>
-                  )}
-                </div>
-              ))}
-            </div>
+           {/* Lista de colaboradores con sus horarios */}
+<div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+  <div className="p-4 border-b border-gray-100">
+    <h2 className="text-xs font-bold text-gray-400 uppercase">
+      Horarios asignados
+    </h2>
+  </div>
+
+  {colaboradores.map(c => (
+    <div
+      key={c.id}
+      className="flex items-center gap-3 p-4 border-b border-gray-100 last:border-0 hover:bg-gray-50"
+    >
+      <div className="w-9 h-9 rounded-lg bg-green-50 flex items-center justify-center text-xs font-bold text-green-700 flex-shrink-0">
+        {c.nombre.split(' ').map(n => n[0]).slice(0, 2).join('')}
+      </div>
+
+      <div className="flex-1">
+        <p className="text-sm font-semibold text-gray-800">
+          {c.nombre}
+        </p>
+        <p className="text-xs text-gray-400">
+          {c.codigo}
+        </p>
+      </div>
+
+      <div className="flex items-center gap-2">
+        {c.horarioNombre ? (
+          <div className="text-right">
+            <span className="text-xs font-semibold bg-green-50 text-green-700 px-2 py-1 rounded-md">
+              {c.horarioNombre}
+            </span>
+
+            <p className="text-xs text-gray-400 mt-0.5">
+              {c.horarioAsignado}
+            </p>
           </div>
+        ) : (
+          <span className="text-xs text-gray-300">
+            Sin asignar
+          </span>
         )}
+
+        <button
+          onClick={() => {
+            setColabSel(String(c.id));
+            setHorarioSel('');
+          }}
+          className="text-xs border border-gray-200 px-2 py-1 rounded-md text-gray-500 hover:bg-gray-50 hover:border-green-400 hover:text-green-700 transition"
+        >
+          {c.horarioNombre ? 'Modificar' : 'Asignar'}
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
+
+</div>
+)}
 
         {/* ══ TAB: GUARDIAS FESTIVOS ══ */}
         {tab === 'Guardias Festivos' && (

@@ -17,8 +17,8 @@ function Empleados() {
   const rol = localStorage.getItem('rol');
 
   const [nuevoColab, setNuevoColab] = useState({
-    codigo: '', nombre: '', unidadNegocio: '', area: '', puesto: '', horario: ''
-  });
+  codigo: '', nombre: '', unidadNegocio: '', area: '', puesto: ''
+});
 
   // Unidades de negocio
   const [unidades, setUnidades] = useState([
@@ -159,13 +159,6 @@ function Empleados() {
                       <option value="">Selecciona puesto</option>
                       {puestos.map(p => <option key={p} value={p}>{p}</option>)}
                     </select>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Horario</label>
-                    <input placeholder="Ej. 08:00–17:00" value={nuevoColab.horario}
-                      onChange={e => setNuevoColab({...nuevoColab, horario: e.target.value})}
-                      className={inputCls} />
                   </div>
 
                 </div>
