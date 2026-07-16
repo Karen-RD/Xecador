@@ -1,121 +1,262 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { login } from '../services/authService';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { login } from "../services/authService";
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
-     setTimeout(() => {
-    // Simulación de 3 roles diferentes
-    const usuarios = {
-      'admin@xcaret.com':      { token: 'token-sa',  rol: 'SuperAdmin',      nombre: 'Karen Rojas' },
-      'rh@xcaret.com':         { token: 'token-th',  rol: 'TalentoHumano',   nombre: 'Admin RH' },
-      'supervisor@xcaret.com': { token: 'token-sup', rol: 'Supervisor',       nombre: 'Victor Ku Poot' },
-    };
+    // ======== LOGIN DE PRUEBA ========
 
-    const usuario = usuarios[email];
+    setTimeout(() => {
+      const usuarios = {
+        "admin@xcaret.com": {
+          token: "token-sa",
+          rol: "SuperAdmin",
+          nombre: "Karen Rojas",
+        },
+        "rh@xcaret.com": {
+          token: "token-rh",
+          rol: "TalentoHumano",
+          nombre: "Admin RH",
+        },
+        "supervisor@xcaret.com": {
+          token: "token-sp",
+          rol: "Supervisor",
+          nombre: "Victor Ku Poot",
+        },
+      };
 
-    if (usuario && password === '123456') {
-      localStorage.setItem('token', usuario.token);
-      localStorage.setItem('rol', usuario.rol);
-      localStorage.setItem('nombre', usuario.nombre);
-      navigate('/dashboard');
-    } else {
-      setError('Correo o contraseña incorrectos');
-    }
-    setLoading(false);
-  }, 800);
-  
-    try {
-      const data = await login(email, password);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('rol', data.rol);
-      localStorage.setItem('nombre', data.nombre);
-      navigate('/dashboard');
-    } catch (err) {
-      setError('Correo o contraseña incorrectos');
-    } finally {
+      const usuario = usuarios[email];
+
+      if (usuario && password === "123456") {
+        localStorage.setItem("token", usuario.token);
+        localStorage.setItem("rol", usuario.rol);
+        localStorage.setItem("nombre", usuario.nombre);
+
+        navigate("/dashboard");
+      } else {
+        setError("Correo o contraseña incorrectos");
+      }
+
       setLoading(false);
+    }, 800);
+
+    /*
+    ======== CUANDO CONECTES EL BACKEND ========
+
+    try{
+        const data = await login(email,password);
+
+        localStorage.setItem("token",data.token);
+        localStorage.setItem("rol",data.rol);
+        localStorage.setItem("nombre",data.nombre);
+
+        navigate("/dashboard");
     }
+    catch{
+        setError("Correo o contraseña incorrectos");
+    }
+    finally{
+        setLoading(false);
+    }
+
+    */
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Lado izquierdo - Foto Xcaret */}
-      <div
-        className="hidden md:flex w-1/2 bg-cover bg-center relative"
-        style={{ backgroundImage: "url('/portada.jpg')" }}
-      >
-        <div className="absolute inset-0 bg-green-900/40"></div>
+    <div
+      className="relative min-h-screen bg-cover bg-center"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(8,35,23,.45), rgba(8,35,23,.45)), url('/portada.jpg')",
+      }}
+    >
+      {/* LOGO SOBRE LA IMAGEN */}
+
+      <div className="absolute top-10 left-10 text-white max-w-lg z-20">
+        <img
+          src="/xecador.png"
+          alt="Xecador"
+          className="w-72 mb-8"
+        />
+
+        <h2 className="text-4xl font-bold mb-4">
+          Sistema Inteligente
+        </h2>
+
+        <p className="text-lg leading-8 text-white/90">
+          Plataforma para la gestión de asistencia,
+          incidencias, jornadas laborales y supervisión
+          de colaboradores.
+        </p>
+
+        <img
+          src="/grupoxcaret.png"
+          className="w-56 mt-12"
+          alt=""
+        />
       </div>
 
-      {/* Lado derecho - Formulario */}
-      <div className="w-full md:w-1/2 flex flex-col items-center justify-center bg-white px-8">
-        <div className="w-full max-w-sm">
-          <h1 className="text-2xl font-bold text-gray-800 mb-1">Iniciar sesión</h1>
-          <p className="text-sm text-gray-500 mb-6">Ingresa tus credenciales corporativas</p>
+      {/* TARJETA */}
+
+      <div className="flex justify-end items-center min-h-screen pr-20">
+
+        <div
+          className="
+          w-full
+          max-w-md
+
+          rounded-3xl
+
+          p-10
+
+          border
+
+          border-white/20
+
+          bg-white/20
+
+          backdrop-blur-xl
+
+          shadow-2xl
+          "
+        >
+
+          <div className="flex justify-center mb-8">
+            <img
+              src="/xecador.png"
+              className="w-52"
+              alt=""
+            />
+          </div>
+
+          <h1 className="text-3xl font-bold text-center text-white">
+            Iniciar sesión
+          </h1>
+
+          <p className="text-center text-white/80 mt-2 mb-8">
+            Ingresa tus credenciales corporativas
+          </p>
 
           {error && (
-            <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg mb-4">
+            <div className="mb-5 rounded-xl bg-red-500/20 border border-red-300 text-white px-4 py-3 text-sm">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit}>
-            <label className="block text-xs font-semibold text-gray-500 mb-1 uppercase">
+
+            <label className="block text-white text-sm mb-2">
               Correo electrónico
             </label>
+
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
               placeholder="usuario@xcaret.com"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 text-sm focus:outline-none focus:border-green-600"
+              value={email}
+              onChange={(e)=>setEmail(e.target.value)}
+              className="
+              w-full
+              rounded-xl
+              bg-white/90
+              px-4
+              py-3
+              mb-5
+              outline-none
+              "
             />
 
-            <label className="block text-xs font-semibold text-gray-500 mb-1 uppercase">
+            <label className="block text-white text-sm mb-2">
               Contraseña
             </label>
+
             <input
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
               placeholder="••••••••"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-5 text-sm focus:outline-none focus:border-green-600"
+              value={password}
+              onChange={(e)=>setPassword(e.target.value)}
+              className="
+              w-full
+              rounded-xl
+              bg-white/90
+              px-4
+              py-3
+              mb-6
+              outline-none
+              "
             />
 
             <button
-              type="submit"
               disabled={loading}
-              className="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-2.5 rounded-lg text-sm transition"
+              className="
+              w-full
+
+              rounded-xl
+
+              bg-green-700
+
+              py-3
+
+              font-semibold
+
+              text-white
+
+              hover:bg-green-800
+
+              transition
+              "
             >
-              {loading ? 'Ingresando...' : 'Ingresar al sistema'}
+              {loading ? "Ingresando..." : "Ingresar"}
             </button>
+
           </form>
 
-          <button className="w-full mt-3 border border-gray-300 text-gray-600 font-medium py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 hover:bg-gray-50 transition">
-            <svg width="16" height="16" viewBox="0 0 23 23"><path fill="#f35325" d="M1 1h10v10H1z"/><path fill="#81bc06" d="M12 1h10v10H12z"/><path fill="#05a6f0" d="M1 12h10v10H1z"/><path fill="#ffba08" d="M12 12h10v10H12z"/></svg>
-            Iniciar sesión rápida con Outlook
+          <div className="flex items-center my-6">
+            <div className="flex-1 border-t border-white/30"></div>
+
+            <span className="px-4 text-white">
+              o
+            </span>
+
+            <div className="flex-1 border-t border-white/30"></div>
+          </div>
+
+          <button
+            className="
+            w-full
+
+            rounded-xl
+
+            bg-white
+
+            py-3
+
+            font-medium
+
+            text-gray-700
+
+            hover:bg-gray-100
+
+            transition
+            "
+          >
+            Continuar con Microsoft
           </button>
 
-          <div className="flex justify-center mt-10">
-            <span className="text-lg font-bold text-gray-800">
-              Xe<span className="text-green-700">cador</span>
-            </span>
-          </div>
         </div>
+
       </div>
+
     </div>
   );
 }
