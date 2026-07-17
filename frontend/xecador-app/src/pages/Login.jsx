@@ -91,14 +91,10 @@ function Login() {
         />
 
         <h2 className="text-4xl font-bold mb-4">
-          Sistema Inteligente
+          Xecador
         </h2>
 
-        <p className="text-lg leading-8 text-white/90">
-          Plataforma para la gestión de asistencia,
-          incidencias, jornadas laborales y supervisión
-          de colaboradores.
-        </p>
+       
 
         <img
           src="/grupoxcaret.png"
