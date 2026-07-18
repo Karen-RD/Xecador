@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using XecadorAPI.Data;
@@ -8,12 +7,12 @@ namespace XecadorAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    // [Authorize] <-- Comentado temporalmente para que puedas probar
     public class EmpleadosController : ControllerBase
     {
-        private readonly XecadorContext _context;
+        private readonly XecadorDbContext _context;
 
-        public EmpleadosController(XecadorContext context)
+        public EmpleadosController(XecadorDbContext context)
         {
             _context = context;
         }
@@ -42,9 +41,11 @@ namespace XecadorAPI.Controllers
             if (existente == null) return NotFound();
 
             existente.NombreCompleto = empleado.NombreCompleto;
+            existente.UnidadNegocio = empleado.UnidadNegocio; // Campo nuevo
             existente.Area = empleado.Area;
             existente.Puesto = empleado.Puesto;
             existente.Horario = empleado.Horario;
+            existente.HorarioId = empleado.HorarioId; // Llave foránea nueva
             existente.Guardia = empleado.Guardia;
 
             await _context.SaveChangesAsync();

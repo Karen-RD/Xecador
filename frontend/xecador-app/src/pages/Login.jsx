@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../services/authService';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -14,35 +13,30 @@ function Login() {
     setError('');
     setLoading(true);
 
-     setTimeout(() => {
-    // Simulación de 3 roles diferentes
-    const usuarios = {
-      'admin@xcaret.com':      { token: 'token-sa',  rol: 'SuperAdmin',      nombre: 'Karen Rojas' },
-      'rh@xcaret.com':         { token: 'token-th',  rol: 'TalentoHumano',   nombre: 'Admin RH' },
-      'supervisor@xcaret.com': { token: 'token-sup', rol: 'Supervisor',       nombre: 'Victor Ku Poot' },
-    };
-
-    const usuario = usuarios[email];
-
-    if (usuario && password === '123456') {
-      localStorage.setItem('token', usuario.token);
-      localStorage.setItem('rol', usuario.rol);
-      localStorage.setItem('nombre', usuario.nombre);
-      navigate('/dashboard');
-    } else {
-      setError('Correo o contraseña incorrectos');
-    }
-    setLoading(false);
-  }, 800);
-  
     try {
-      const data = await login(email, password);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('rol', data.rol);
-      localStorage.setItem('nombre', data.nombre);
-      navigate('/dashboard');
+      // Conexión real a tu backend
+      const respuesta = await fetch('http://localhost:5177/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // Enviamos el email y el password tal como los espera tu LoginDto en C#
+        body: JSON.stringify({ email, password }) 
+      });
+
+      if (respuesta.ok) {
+        const data = await respuesta.json();
+        // Guardamos el token y los datos reales que vienen de MySQL
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('rol', data.rol);
+        localStorage.setItem('nombre', data.nombre);
+        navigate('/dashboard');
+      } else {
+        const errData = await respuesta.json();
+        setError(errData.message || 'Correo o contraseña incorrectos');
+      }
     } catch (err) {
-      setError('Correo o contraseña incorrectos');
+      setError('Error al conectar con el servidor. Verifica que el API esté corriendo.');
     } finally {
       setLoading(false);
     }

@@ -1,38 +1,43 @@
 import api from './api';
 
+// Ajustamos el login para asegurar que maneje bien los errores
 export const login = async (email, password) => {
-  const response = await api.post('/auth/login', { email, password });
-  return response.data;
+  try {
+    const response = await api.post('/auth/login', { email, password });
+    return response.data;
+  } catch (error) {
+    console.error("Error en servicio de login:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// Función helper para obtener el token y evitar repetir código
+const getHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  };
 };
 
 export const getEmpleados = async () => {
-  const token = localStorage.getItem('token');
-  const response = await api.get('/empleados', {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+  const response = await api.get('/empleados', getHeaders());
   return response.data;
 };
 
 export const getIncidencias = async () => {
-  const token = localStorage.getItem('token');
-  const response = await api.get('/incidencias', {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+  const response = await api.get('/incidencias', getHeaders());
   return response.data;
 };
 
 export const aprobarIncidencia = async (id) => {
-  const token = localStorage.getItem('token');
-  const response = await api.put(`/incidencias/${id}/aprobar`, {}, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+  const response = await api.put(`/incidencias/${id}/aprobar`, {}, getHeaders());
   return response.data;
 };
 
 export const rechazarIncidencia = async (id) => {
-  const token = localStorage.getItem('token');
-  const response = await api.put(`/incidencias/${id}/rechazar`, {}, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+  const response = await api.put(`/incidencias/${id}/rechazar`, {}, getHeaders());
   return response.data;
 };

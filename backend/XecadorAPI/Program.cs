@@ -7,13 +7,12 @@ using XecadorAPI.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Base de datos MySQL
-builder.Services.AddDbContext<XecadorContext>(options =>
+builder.Services.AddDbContext<XecadorDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
     )
 );
-
 // JWT
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -58,5 +57,37 @@ app.UseCors("AllowReact");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+
+// ============================================================
+// COMPROBACIÓN DE CONEXIÓN A LA BASE DE DATOS
+// ============================================================
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<XecadorDbContext>();
+        if (context.Database.CanConnect())
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("✅ ÉXITO: Conexión establecida con la base de datos XECADOR.");
+            Console.ResetColor();
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("❌ ERROR: No se pudo establecer la conexión a la base de datos.");
+            Console.ResetColor();
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"❌ ERROR DE CONEXIÓN: {ex.Message}");
+        Console.ResetColor();
+    }
+}
+// ============================================================
 
 app.Run();

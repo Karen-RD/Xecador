@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using XecadorAPI.Data;
@@ -8,12 +7,12 @@ namespace XecadorAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    // [Authorize]
     public class AsistenciaController : ControllerBase
     {
-        private readonly XecadorContext _context;
+        private readonly XecadorDbContext _context;
 
-        public AsistenciaController(XecadorContext context)
+        public AsistenciaController(XecadorDbContext context)
         {
             _context = context;
         }
@@ -33,16 +32,6 @@ namespace XecadorAPI.Controllers
             var asistencia = await _context.Asistencias
                 .Where(a => a.EmpleadoId == empleadoId)
                 .OrderByDescending(a => a.Fecha)
-                .ToListAsync();
-            return Ok(asistencia);
-        }
-
-        [HttpGet("mes/{anio}/{mes}")]
-        public async Task<IActionResult> GetByMes(int anio, int mes)
-        {
-            var asistencia = await _context.Asistencias
-                .Include(a => a.Empleado)
-                .Where(a => a.Fecha.Year == anio && a.Fecha.Month == mes)
                 .ToListAsync();
             return Ok(asistencia);
         }

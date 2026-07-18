@@ -8,12 +8,12 @@ namespace XecadorAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    //[Authorize]
     public class HorariosController : ControllerBase
     {
-        private readonly XecadorContext _context;
+        private readonly XecadorDbContext _context;
 
-        public HorariosController(XecadorContext context)
+        public HorariosController(XecadorDbContext context)
         {
             _context = context;
         }

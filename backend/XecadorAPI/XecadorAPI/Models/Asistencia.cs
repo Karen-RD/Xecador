@@ -7,7 +7,10 @@ namespace XecadorAPI.Models
         public DateTime Fecha { get; set; }
         public string? Entrada { get; set; }
         public string? Salida { get; set; }
-        public string Estado { get; set; } = string.Empty;
+        public string Estado { get; set; } = "A"; // Default a "Asistencia"
+        public string? Observaciones { get; set; } // Nuevo campo
+
+        // Propiedad de navegación
         public Empleado? Empleado { get; set; }
     }
 }

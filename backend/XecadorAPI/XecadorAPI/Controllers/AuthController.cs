@@ -13,10 +13,10 @@ namespace XecadorAPI.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly XecadorContext _context;
+        private readonly XecadorDbContext _context;
         private readonly IConfiguration _config;
 
-        public AuthController(XecadorContext context, IConfiguration config)
+        public AuthController(XecadorDbContext context, IConfiguration config)
         {
             _context = context;
             _config = config;
@@ -64,6 +64,57 @@ namespace XecadorAPI.Controllers
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        // ==========================================================
+        // ENDPOINT PARA CREAR USUARIOS DE PRUEBA CON CONTRASEÑA ENCRIPTADA
+        // ==========================================================
+        [HttpPost("crear-usuarios-prueba")]
+        public async Task<IActionResult> CrearUsuariosPrueba()
+        {
+            // Primero borramos los que insertaste mal en SQL para que no haya duplicados
+            var usuariosMalos = await _context.Usuarios.ToListAsync();
+            _context.Usuarios.RemoveRange(usuariosMalos);
+            await _context.SaveChangesAsync();
+
+            // Encriptamos la contraseña "123456" de la forma que a C# le gusta
+            var contraseñaEncriptada = BCrypt.Net.BCrypt.HashPassword("123456");
+
+            var usuariosPrueba = new List<Models.Usuario>
+            {
+                new Models.Usuario 
+                { 
+                    Nombre = "Karen Rojas", 
+                    Email = "admin@xcaret.com", 
+                    Rol = "SuperAdmin", 
+                    PasswordHash = contraseñaEncriptada, 
+                    Activo = true,
+                    FechaCreacion = DateTime.Now
+                },
+                new Models.Usuario 
+                { 
+                    Nombre = "Admin RH", 
+                    Email = "rh@xcaret.com", 
+                    Rol = "TalentoHumano", 
+                    PasswordHash = contraseñaEncriptada, 
+                    Activo = true,
+                    FechaCreacion = DateTime.Now
+                },
+                new Models.Usuario 
+                { 
+                    Nombre = "Victor Ku Poot", 
+                    Email = "supervisor@xcaret.com", 
+                    Rol = "Supervisor", 
+                    PasswordHash = contraseñaEncriptada, 
+                    Activo = true,
+                    FechaCreacion = DateTime.Now
+                }
+            };
+
+            _context.Usuarios.AddRange(usuariosPrueba);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Los usuarios fueron recreados exitosamente con la contraseña '123456' encriptada." });
         }
     }
 }

@@ -1,36 +1,65 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
-import { incidenciasDemo } from '../services/datosDemo';
 
 function Incidencias() {
-  const [incidencias, setIncidencias] = useState(incidenciasDemo);
+  const [incidencias, setIncidencias] = useState([]); // Empieza vacío
+  const [empleados, setEmpleados] = useState([]); // Para cargar la lista de empleados
   const [filtro, setFiltro] = useState('Pendiente');
   const [mostrarForm, setMostrarForm] = useState(false);
-  const [nueva, setNueva] = useState({ nombre: '', tipo: 'Vacaciones', fechaInicio: '', fechaFin: '' });
+  const [nueva, setNueva] = useState({ empleadoId: '', tipo: 'Vacaciones', fechaInicio: '', fechaFin: '' });
   const rol = localStorage.getItem('rol');
+
+  // Cargar datos al abrir la pantalla
+  useEffect(() => {
+    const cargarDatos = async () => {
+      try {
+        const resIncidencias = await fetch('http://localhost:5177/api/incidencias');
+        if (resIncidencias.ok) setIncidencias(await resIncidencias.json());
+
+        const resEmpleados = await fetch('http://localhost:5177/api/empleados');
+        if (resEmpleados.ok) setEmpleados(await resEmpleados.json());
+      } catch (error) {
+        console.error("Error al cargar datos:", error);
+      }
+    };
+    cargarDatos();
+  }, []);
 
   const incFiltradas = filtro === 'Todas'
     ? incidencias
     : incidencias.filter(i => i.estatus === filtro);
 
-  const handleAprobar = (id) => {
-    setIncidencias(incidencias.map(i => i.id === id ? { ...i, estatus: 'Aprobado' } : i));
-  };
+  const handleGuardar = async () => {
+    if (!nueva.empleadoId || !nueva.fechaInicio) return;
 
-  const handleRechazar = (id) => {
-    setIncidencias(incidencias.map(i => i.id === id ? { ...i, estatus: 'Rechazado' } : i));
-  };
+    // Buscamos el nombre del empleado seleccionado
+    const empleadoSel = empleados.find(e => e.id === parseInt(nueva.empleadoId));
 
-  const handleGuardar = () => {
-    if (!nueva.nombre || !nueva.fechaInicio) return;
-    setIncidencias([...incidencias, {
-      id: incidencias.length + 1,
-      colaboradorId: 99,
-      ...nueva,
+    const payload = {
+      empleadoId: parseInt(nueva.empleadoId),
+      nombreEmpleado: empleadoSel?.nombreCompleto || 'Desconocido',
+      tipo: nueva.tipo,
+      fechaInicio: nueva.fechaInicio,
+      fechaFin: nueva.fechaFin || nueva.fechaInicio,
       estatus: 'Pendiente'
-    }]);
-    setMostrarForm(false);
-    setNueva({ nombre: '', tipo: 'Vacaciones', fechaInicio: '', fechaFin: '' });
+    };
+
+    try {
+      const respuesta = await fetch('http://localhost:5177/api/incidencias', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (respuesta.ok) {
+        const incidenciaGuardada = await respuesta.json();
+        setIncidencias([...incidencias, incidenciaGuardada]);
+        setMostrarForm(false);
+        setNueva({ empleadoId: '', tipo: 'Vacaciones', fechaInicio: '', fechaFin: '' });
+      }
+    } catch (error) {
+      console.error("Error al guardar:", error);
+    }
   };
 
   const colorEstatus = (e) => {
@@ -62,9 +91,15 @@ function Incidencias() {
           <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4">
             <h2 className="text-sm font-bold text-gray-700 mb-3">Nueva incidencia</h2>
             <div className="grid grid-cols-2 gap-3">
-              <input placeholder="Nombre del colaborador" value={nueva.nombre}
-                onChange={e => setNueva({...nueva, nombre: e.target.value})}
-                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-600 col-span-2" />
+              <select value={nueva.empleadoId} 
+                onChange={e => setNueva({...nueva, empleadoId: e.target.value})}
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-600 col-span-2">
+                <option value="">Selecciona un empleado...</option>
+                {empleados.map(emp => (
+                  <option key={emp.id} value={emp.id}>{emp.nombreCompleto}</option>
+                ))}
+              </select>
+
               <select value={nueva.tipo} onChange={e => setNueva({...nueva, tipo: e.target.value})}
                 className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-600">
                 <option>Vacaciones</option>
@@ -105,29 +140,17 @@ function Incidencias() {
             <div key={inc.id}
               className={`bg-white border-l-4 border border-gray-200 rounded-xl p-4 flex items-center gap-4 ${inc.estatus === 'Pendiente' ? 'border-l-yellow-400' : inc.estatus === 'Aprobado' ? 'border-l-green-500' : 'border-l-red-400'}`}>
               <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-xs font-bold text-green-700 flex-shrink-0">
-                {inc.nombre.split(' ').map(n => n[0]).slice(0,2).join('')}
+                {inc.nombreEmpleado ? inc.nombreEmpleado.substring(0,2).toUpperCase() : 'XC'}
               </div>
               <div className="flex-1">
-                <p className="text-sm font-semibold text-gray-800">{inc.nombre}</p>
+                <p className="text-sm font-semibold text-gray-800">{inc.nombreEmpleado}</p>
                 <p className="text-xs text-gray-400">
-                  {inc.tipo} · {inc.fechaInicio} {inc.fechaFin && inc.fechaFin !== inc.fechaInicio ? `→ ${inc.fechaFin}` : ''}
+                  {inc.tipo} · {inc.fechaInicio.split('T')[0]} {inc.fechaFin && inc.fechaFin !== inc.fechaInicio ? `→ ${inc.fechaFin.split('T')[0]}` : ''}
                 </p>
               </div>
               <span className={`text-xs font-semibold px-2 py-1 rounded-md ${colorEstatus(inc.estatus)}`}>
                 {inc.estatus}
               </span>
-              {inc.estatus === 'Pendiente' && (rol === 'SuperAdmin' || rol === 'TalentoHumano') && (
-                <div className="flex gap-2">
-                  <button onClick={() => handleAprobar(inc.id)}
-                    className="text-xs bg-green-50 border border-green-200 text-green-700 px-3 py-1.5 rounded-lg hover:bg-green-100">
-                    ✓ Aprobar
-                  </button>
-                  <button onClick={() => handleRechazar(inc.id)}
-                    className="text-xs bg-red-50 border border-red-200 text-red-500 px-3 py-1.5 rounded-lg hover:bg-red-100">
-                    ✕ Rechazar
-                  </button>
-                </div>
-              )}
             </div>
           ))}
         </div>
