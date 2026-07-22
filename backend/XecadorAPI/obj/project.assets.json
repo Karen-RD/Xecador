@@ -2965,19 +2965,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\fguzman.prac\\.nuget\\packages\\": {}
+    "C:\\Users\\krojas.prac\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\fguzman.prac\\OneDrive - GRUPO XCARET\\Documentos\\Proyecto Xcaret\\Xecador\\Xecador\\backend\\XecadorAPI\\XecadorAPI.csproj",
+      "projectUniqueName": "C:\\Users\\krojas.prac\\OneDrive - GRUPO XCARET\\Escritorio\\Xecador\\backend\\XecadorAPI\\XecadorAPI.csproj",
       "projectName": "XecadorAPI",
-      "projectPath": "C:\\Users\\fguzman.prac\\OneDrive - GRUPO XCARET\\Documentos\\Proyecto Xcaret\\Xecador\\Xecador\\backend\\XecadorAPI\\XecadorAPI.csproj",
-      "packagesPath": "C:\\Users\\fguzman.prac\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\fguzman.prac\\OneDrive - GRUPO XCARET\\Documentos\\Proyecto Xcaret\\Xecador\\Xecador\\backend\\XecadorAPI\\obj\\",
+      "projectPath": "C:\\Users\\krojas.prac\\OneDrive - GRUPO XCARET\\Escritorio\\Xecador\\backend\\XecadorAPI\\XecadorAPI.csproj",
+      "packagesPath": "C:\\Users\\krojas.prac\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\krojas.prac\\OneDrive - GRUPO XCARET\\Escritorio\\Xecador\\backend\\XecadorAPI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\fguzman.prac\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\krojas.prac\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -3052,7 +3052,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.423/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.422/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

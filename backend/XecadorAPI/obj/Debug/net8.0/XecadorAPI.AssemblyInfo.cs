@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("XecadorAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+72bb208328264d554b7f0c40bf933e64eb26a203")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f77de805518ed076e3d0cfc44e0ef6d457710aa5")]
 [assembly: System.Reflection.AssemblyProductAttribute("XecadorAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("XecadorAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
